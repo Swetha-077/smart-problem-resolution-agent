@@ -1,0 +1,36 @@
+```gitignore
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+venv/
+env/
+.venv/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+smart_resolution.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+```
+# Exclude duplicate project copy and archive
+smart-problem-resolution-agent-main/
+agent.zip

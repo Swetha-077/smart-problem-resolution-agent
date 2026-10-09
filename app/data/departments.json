@@ -1,0 +1,44 @@
+{
+  "IT": {
+    "description": "Hardware, software, network, login/access issues, laptops, printers, VPN, email client problems.",
+    "contact": "IT Helpdesk",
+    "email": "it-support@company.com",
+    "phone": "+1-800-555-0101"
+  },
+  "HR": {
+    "description": "Payroll, leave, benefits, onboarding, workplace conduct, harassment, policy questions.",
+    "contact": "HR Department",
+    "email": "hr@company.com",
+    "phone": "+1-800-555-0102"
+  },
+  "Finance": {
+    "description": "Billing errors, invoices, reimbursements, expense reports, budget approvals.",
+    "contact": "Finance Team",
+    "email": "finance@company.com",
+    "phone": "+1-800-555-0103"
+  },
+  "Facilities": {
+    "description": "Office maintenance, AC/heating, electrical, furniture, cleanliness, building access/security badges.",
+    "contact": "Facilities Management",
+    "email": "facilities@company.com",
+    "phone": "+1-800-555-0104"
+  },
+  "Security": {
+    "description": "Data breaches, suspicious emails/phishing, physical security threats, lost access badges, account compromise.",
+    "contact": "Security & Compliance Team",
+    "email": "security@company.com",
+    "phone": "+1-800-555-0105"
+  },
+  "CustomerSupport": {
+    "description": "External customer complaints, product issues, refunds, service quality complaints.",
+    "contact": "Customer Support Desk",
+    "email": "support@company.com",
+    "phone": "+1-800-555-0106"
+  },
+  "General": {
+    "description": "Anything that doesn't clearly match another category, or general inquiries.",
+    "contact": "General Help Desk",
+    "email": "helpdesk@company.com",
+    "phone": "+1-800-555-0100"
+  }
+}

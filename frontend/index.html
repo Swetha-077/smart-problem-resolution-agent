@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Problem Resolution Agent</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .dashboard,
+        .container,
+        .tickets-section {
+            max-width: 1000px;
+            margin: 0 auto 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        .stat-box h3 {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .stat-box p {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            margin-top: 10px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 9px 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #2563eb;
+            color: white;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .analyze-button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 15px;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .error {
+            color: red;
+            margin-top: 15px;
+        }
+
+        .field {
+            margin: 10px 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+
+        select {
+            padding: 7px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .empty-message {
+            text-align: center;
+        }
+
+        .message {
+            margin-top: 10px;
+            color: green;
+        }
+
+        @media (max-width: 800px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DASHBOARD -->
+
+    <div class="dashboard">
+
+        <h2>Ticket Dashboard</h2>
+
+        <div class="stats">
+
+            <div class="stat-box">
+                <h3>Total Tickets</h3>
+                <p id="totalTickets">0</p>
+            </div>
+
+            <div class="stat-box">
+                <h3>Open</h3>
+                <p id="openTickets">0</p>
+            </div>
+
+            <div class="stat-box">
+                <h3>In Progress</h3>
+                <p id="inProgressTickets">0</p>
+            </div>
+
+            <div class="stat-box">
+                <h3>Resolved</h3>
+                <p id="resolvedTickets">0</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROBLEM RESOLUTION -->
+
+    <div class="container">
+
+        <h1>Smart Problem Resolution Agent</h1>
+
+        <label for="problem">
+            Describe your problem:
+        </label>
+
+        <textarea
+            id="problem"
+            placeholder="Example: The Wi-Fi in the computer lab is not working."
+        ></textarea>
+
+        <button
+            class="analyze-button"
+            onclick="analyzeProblem()">
+            Analyze Problem
+        </button>
+
+        <div id="error" class="error"></div>
+
+
+        <!-- RESULT -->
+
+        <div id="result" class="result">
+
+            <h2>Resolution</h2>
+
+            <div class="field">
+                <strong>Ticket ID:</strong>
+                <span id="ticketId"></span>
+            </div>
+
+            <div class="field">
+                <strong>Category:</strong>
+                <span id="category"></span>
+            </div>
+
+            <div class="field">
+                <strong>Priority:</strong>
+                <span id="priority"></span>
+            </div>
+
+            <div class="field">
+                <strong>Status:</strong>
+                <span id="status"></span>
+            </div>
+
+            <div class="field">
+                <strong>Suggested Contact:</strong>
+                <span id="contact"></span>
+            </div>
+
+            <div class="field">
+                <strong>Email:</strong>
+                <span id="email"></span>
+            </div>
+
+            <div class="field">
+                <strong>Phone:</strong>
+                <span id="phone"></span>
+            </div>
+
+            <div class="field">
+                <strong>Reasoning:</strong>
+                <span id="reasoning"></span>
+            </div>
+
+            <div class="field">
+                <strong>Recommended Action:</strong>
+                <span id="action"></span>
+            </div>
+
+            <div class="field">
+                <strong>Estimated Response Time:</strong>
+                <span id="responseTime"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PREVIOUS TICKETS -->
+
+    <div class="tickets-section">
+
+        <h2>Previous Tickets</h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Problem</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="ticketsTableBody">
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p id="emptyTickets" class="empty-message">
+            No tickets found.
+        </p>
+
+        <p id="updateMessage" class="message"></p>
+
+    </div>
+
+
+    <script>
+
+        const API_BASE = "http://127.0.0.1:8000";
+
+
+        // DASHBOARD
+
+        async function loadDashboard() {
+
+            try {
+
+                const response =
+                    await fetch(`${API_BASE}/dashboard`);
+
+                const data =
+                    await response.json();
+
+                document.getElementById("totalTickets").textContent =
+                    data.total_tickets;
+
+                document.getElementById("openTickets").textContent =
+                    data.open_tickets;
+
+                document.getElementById("inProgressTickets").textContent =
+                    data.in_progress;
+
+                document.getElementById("resolvedTickets").textContent =
+                    data.resolved;
+
+            } catch (error) {
+
+                console.log("Dashboard error:", error);
+
+            }
+        }
+
+
+        // LOAD TICKETS
+
+        async function loadTickets() {
+
+            try {
+
+                const response =
+                    await fetch(`${API_BASE}/tickets`);
+
+                const tickets =
+                    await response.json();
+
+                const tableBody =
+                    document.getElementById("ticketsTableBody");
+
+                const emptyMessage =
+                    document.getElementById("emptyTickets");
+
+                tableBody.innerHTML = "";
+
+                if (tickets.length === 0) {
+
+                    emptyMessage.style.display = "block";
+                    return;
+
+                }
+
+                emptyMessage.style.display = "none";
+
+
+                tickets.forEach(ticket => {
+
+                    const row =
+                        document.createElement("tr");
+
+                    row.innerHTML = `
+
+                        <td>${ticket.id}</td>
+
+                        <td>${ticket.problem_description}</td>
+
+                        <td>${ticket.category}</td>
+
+                        <td>${ticket.priority}</td>
+
+                        <td>${ticket.suggested_contact}</td>
+
+                        <td>${ticket.status}</td>
+
+                        <td>
+
+                            <select id="status-${ticket.id}">
+
+                                <option value="Open"
+                                    ${ticket.status === "Open" ? "selected" : ""}>
+                                    Open
+                                </option>
+
+                                <option value="In Progress"
+                                    ${ticket.status === "In Progress" ? "selected" : ""}>
+                                    In Progress
+                                </option>
+
+                                <option value="Resolved"
+                                    ${ticket.status === "Resolved" ? "selected" : ""}>
+                                    Resolved
+                                </option>
+
+                            </select>
+
+                            <button
+                                onclick="updateStatus(${ticket.id})">
+                                Update
+                            </button>
+
+                        </td>
+
+                    `;
+
+                    tableBody.appendChild(row);
+
+                });
+
+            } catch (error) {
+
+                console.log("Tickets error:", error);
+
+            }
+        }
+
+
+        // UPDATE STATUS
+
+        async function updateStatus(ticketId) {
+
+            const status =
+                document.getElementById(
+                    `status-${ticketId}`
+                ).value;
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/tickets/${ticketId}/status?status=${encodeURIComponent(status)}`,
+                        {
+                            method: "PUT"
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error || "Unable to update status."
+                    );
+
+                }
+
+                document.getElementById(
+                    "updateMessage"
+                ).textContent =
+                    `Ticket ${ticketId} updated to ${status}.`;
+
+                loadTickets();
+                loadDashboard();
+
+            } catch (error) {
+
+                document.getElementById(
+                    "updateMessage"
+                ).textContent =
+                    error.message;
+
+            }
+
+        }
+
+
+        // ANALYZE PROBLEM
+
+        async function analyzeProblem() {
+
+            const problem =
+                document.getElementById("problem").value.trim();
+
+            const error =
+                document.getElementById("error");
+
+            const result =
+                document.getElementById("result");
+
+
+            error.textContent = "";
+
+            result.style.display = "none";
+
+
+            if (problem.length < 5) {
+
+                error.textContent =
+                    "Please enter a problem with at least 5 characters.";
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/resolve`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                problem_description: problem
+                            })
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to analyze the problem."
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                const ticketsResponse =
+                    await fetch(`${API_BASE}/tickets`);
+
+                const tickets =
+                    await ticketsResponse.json();
+
+                const ticket =
+                    tickets[0];
+
+
+                document.getElementById("ticketId").textContent =
+                    ticket.id;
+
+                document.getElementById("category").textContent =
+                    data.category;
+
+                document.getElementById("priority").textContent =
+                    data.priority;
+
+                document.getElementById("status").textContent =
+                    ticket.status;
+
+                document.getElementById("contact").textContent =
+                    data.suggested_contact;
+
+                document.getElementById("email").textContent =
+                    data.contact_email;
+
+                document.getElementById("phone").textContent =
+                    data.contact_phone;
+
+                document.getElementById("reasoning").textContent =
+                    data.reasoning;
+
+                document.getElementById("action").textContent =
+                    data.recommended_action;
+
+                document.getElementById("responseTime").textContent =
+                    data.estimated_response_time;
+
+
+                result.style.display = "block";
+
+
+                loadDashboard();
+                loadTickets();
+
+            } catch (err) {
+
+                error.textContent =
+                    err.message;
+
+            }
+
+        }
+
+
+        // INITIAL LOAD
+
+        loadDashboard();
+        loadTickets();
+
+    </script>
+
+</body>
+</html>
